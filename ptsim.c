@@ -46,6 +46,60 @@ void new_process(int proc_num, int page_count)
         mem[pt_addr] = new_page;
 	}
 }
+
+//
+// ALGORITHM TO DEALLOCATE A PAGE
+//
+// DeallocatePage(p):
+//     Set the value at address p in zeropage to 0
+
+//
+// ALGORITHM TO KILL A PROCESS
+//
+// KillProcess(p):
+//     Get the page table page for this process page_table_page = mem[proc_num + 64];
+
+//     Get the page table for this process
+
+//     For each entry in the page table
+//         If it's not 0:
+//             Deallocate that page
+
+//     Deallocate the page table page
+
+//
+// CONVERTING A VIRTUAL ADDRESS TO A PHYSICAL ADDRESS
+//
+// virtual_page = virtual_address >> 8
+// offset = virtual_address & 255;
+// GetPhysicalAddress(proc_num, virtual_addr):
+//     Get the virtual page (see code above)
+//     Get the offset
+//     Get the physical page from the page table
+
+//     Build the physical address from the phys page and offset
+
+//     Return it
+//     phys_addr = (phys_page << 8) | offset;
+
+
+//
+// ALGORITHM TO STORE A VALUE AT A VIRTUAL ADDRESS
+//
+// StoreValue(proc_num, virt_addr, value):
+//     phys_addr = GetPhysicalAddr(proc_num, virt_addr)
+//     mem[phys_addr] = value
+//     printf("Store proc %d: %d => %d, value=%d\n",
+//     proc_num, vaddr, addr, val);
+
+//
+// ALGORITHM TO LOAD A VALUE FROM A VIRTUAL ADDRESS
+//
+// LoadValue(proc_num, virt_addr):
+//     phys_addr = GetPhysicalAddr(proc_num, virt_addr)
+//     value = mem[phys_addr]
+//     printf("Load proc %d: %d => %d, value=%d\n",
+//     proc_num, vaddr, addr, val);
 //
 // Print the free page map
 //
