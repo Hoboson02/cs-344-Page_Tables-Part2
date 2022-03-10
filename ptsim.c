@@ -50,22 +50,26 @@ void new_process(int proc_num, int page_count)
 //
 // ALGORITHM TO DEALLOCATE A PAGE
 //
-// DeallocatePage(p):
-//     Set the value at address p in zeropage to 0
-
+void deallocate_page(int page_num) {
+    mem[page_num] = 0; //Set the value at address p in zeropage to 0
+}
 //
 // ALGORITHM TO KILL A PROCESS
 //
-// KillProcess(p):
-//     Get the page table page for this process page_table_page = mem[proc_num + 64];
+void KillProcess(int page) {
+    int page_table_page = get_page(); // Get the page table page for this process
+    page_table_page = mem[page + 64]; // Get the page table for this process
 
-//     Get the page table for this process
-
-//     For each entry in the page table
-//         If it's not 0:
-//             Deallocate that page
-
-//     Deallocate the page table page
+    for (int i = 0; i < PAGE_SIZE; i++) { //For each entry in the page table
+        int page_address = get_address(page_table_page, i);
+        if (mem[page_address] != 0) {//If it's not 0 
+            int page_table_page = mem[page_address];
+            deallocate_page(page_table_page);//Deallocate that page
+            mem[page_address] = 0;
+        }
+    deallocate_page(page_table_page);
+    }
+}
 
 //
 // CONVERTING A VIRTUAL ADDRESS TO A PHYSICAL ADDRESS
@@ -154,6 +158,16 @@ int main(int argc, char *argv[])
         else if (strcmp(argv[i], "ppt") == 0) {
             int proc_num = atoi(argv[++i]);
             print_page_table(proc_num);
+        }
+        else if (strcmp(argv[i], "kp") == 0) { // kill process n and free all its pages.
+            int proc_num = atoi(argv[++i]);
+            KillProcess(proc_num);
+        }
+        else if (strcmp(argv[i], "sb") == 0) { // For process n at virtual address a, store the value b.
+
+        }
+        else if(strcmp(argv[i], "lb") == 0) { // For process n, get the value at virtual address a.
+
         }
     }
 }
