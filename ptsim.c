@@ -83,27 +83,30 @@ void KillProcess(int page) {
 //
 // CONVERTING A VIRTUAL ADDRESS TO A PHYSICAL ADDRESS
 //
-// virtual_page = virtual_address >> 8
-// offset = virtual_address & 255;
-// GetPhysicalAddress(proc_num, virtual_addr):
-//     Get the virtual page (see code above)
-//     Get the offset
-//     Get the physical page from the page table
 
-//     Build the physical address from the phys page and offset
 
-//     Return it
-//     phys_addr = (phys_page << 8) | offset;
+int GetPhysicalAddress(int proc_num, int virtual_addr) {
+    int virtual_page = virtual_addr >> 8; //Get the virtual page (see code above)
+    int page_table_addr = get_address(get_page_table(proc_num), 0); //Converting page into an address
+    int offset = virtual_addr & 255; // Get the offset
+    int phys_page = mem[page_table_addr + virtual_page];// Get the physical page from the page table
+
+    int phys_addr = (phys_page << 8) | offset;// Build the physical address from the phys page and offset
+
+    // Return it
+    return phys_addr;
+}
 
 
 //
 // ALGORITHM TO STORE A VALUE AT A VIRTUAL ADDRESS
 //
-// StoreValue(proc_num, virt_addr, value):
-//     phys_addr = GetPhysicalAddr(proc_num, virt_addr)
-//     mem[phys_addr] = value
-//     printf("Store proc %d: %d => %d, value=%d\n",
-//     proc_num, vaddr, addr, val);
+void StoreValue(int proc_num, int virt_addr, int value) {
+    int phys_addr = GetPhysicalAddress(proc_num, virt_addr);
+    mem[phys_addr] = value;
+    printf("Store proc %d: %d => %d, value=%d\n",
+    proc_num, virt_addr, phys_addr, value);
+}
 
 //
 // ALGORITHM TO LOAD A VALUE FROM A VIRTUAL ADDRESS
@@ -173,7 +176,10 @@ int main(int argc, char *argv[])
             KillProcess(proc_num);
         }
         else if (strcmp(argv[i], "sb") == 0) { // For process n at virtual address a, store the value b.
-
+            int proc_num = atoi(argv[++i]);
+            int virt_addr = atoi(argv[++i]);
+            int value = atoi(argv[++i]);
+            StoreValue(proc_num, virt_addr, value);
         }
         else if(strcmp(argv[i], "lb") == 0) { // For process n, get the value at virtual address a.
 
