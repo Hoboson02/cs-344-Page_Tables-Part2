@@ -67,14 +67,13 @@ void deallocate_page(int page_num) {
 // ALGORITHM TO KILL A PROCESS
 //
 void KillProcess(int page) {
-    int page_table_page = get_page(); // Get the page table page for this process
-    page_table_page = mem[page + 64]; // Get the page table for this process
+    int page_table_page = get_page_table(page); // Get the page table page for this process
 
     for (int i = 0; i < PAGE_SIZE; i++) { //For each entry in the page table
         int page_address = get_address(page_table_page, i);
         if (mem[page_address] != 0) {//If it's not 0 
-            int page_table_page = mem[page_address];
-            deallocate_page(page_table_page);//Deallocate that page
+            int page_num = mem[page_address];
+            deallocate_page(page_num);//Deallocate that page
             mem[page_address] = 0;
         }
     deallocate_page(page_table_page);
