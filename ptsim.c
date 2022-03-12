@@ -108,17 +108,8 @@ void StoreValue(int proc_num, int virt_addr, int value) {
     proc_num, virt_addr, phys_addr, value);
 }
 
-//
-// ALGORITHM TO LOAD A VALUE FROM A VIRTUAL ADDRESS
-//
-// LoadValue(proc_num, virt_addr):
-//     phys_addr = GetPhysicalAddr(proc_num, virt_addr)
-//     value = mem[phys_addr]
-//     printf("Load proc %d: %d => %d, value=%d\n",
-//     proc_num, vaddr, addr, val);
-//
-// Print the free page map
-//
+
+
 void print_page_free_map(void)
 {
     printf("--- PAGE FREE MAP ---\n");
@@ -129,6 +120,19 @@ void print_page_free_map(void)
             putchar('\n');
     }
 }
+
+//
+// ALGORITHM TO LOAD A VALUE FROM A VIRTUAL ADDRESS
+//
+void LoadValue(int proc_num, int virt_addr) {
+    int phys_addr = GetPhysicalAddress(proc_num, virt_addr);
+    int value = mem[phys_addr];
+    printf("Load proc %d: %d => %d, value=%d\n",
+    proc_num, virt_addr, phys_addr, value);
+
+    print_page_free_map();
+}
+
 //
 // Print the address map from virtual pages to physical
 //
@@ -182,7 +186,9 @@ int main(int argc, char *argv[])
             StoreValue(proc_num, virt_addr, value);
         }
         else if(strcmp(argv[i], "lb") == 0) { // For process n, get the value at virtual address a.
-
+            int proc_num = atoi(argv[++i]);
+            int virt_addr = atoi(argv[++i]);
+            LoadValue(proc_num, virt_addr);
         }
     }
 }
