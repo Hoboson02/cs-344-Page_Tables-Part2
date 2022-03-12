@@ -66,7 +66,7 @@ void deallocate_page(int page_num) {
 //
 // ALGORITHM TO KILL A PROCESS
 //
-void KillProcess(int page) {
+void kill_process(int page) {
     int page_table_page = get_page_table(page); // Get the page table page for this process
 
     for (int i = 0; i < PAGE_SIZE; i++) { //For each entry in the page table
@@ -85,7 +85,7 @@ void KillProcess(int page) {
 //
 
 
-int GetPhysicalAddress(int proc_num, int virtual_addr) {
+int get_physical_address(int proc_num, int virtual_addr) {
     int virtual_page = virtual_addr >> 8; //Get the virtual page (see code above)
     int page_table_addr = get_address(get_page_table(proc_num), 0); //Converting page into an address
     int offset = virtual_addr & 255; // Get the offset
@@ -101,8 +101,8 @@ int GetPhysicalAddress(int proc_num, int virtual_addr) {
 //
 // ALGORITHM TO STORE A VALUE AT A VIRTUAL ADDRESS
 //
-void StoreValue(int proc_num, int virt_addr, int value) {
-    int phys_addr = GetPhysicalAddress(proc_num, virt_addr);
+void store_value(int proc_num, int virt_addr, int value) {
+    int phys_addr = get_physical_address(proc_num, virt_addr);
     mem[phys_addr] = value;
     printf("Store proc %d: %d => %d, value=%d\n",
     proc_num, virt_addr, phys_addr, value);
@@ -124,8 +124,8 @@ void print_page_free_map(void)
 //
 // ALGORITHM TO LOAD A VALUE FROM A VIRTUAL ADDRESS
 //
-void LoadValue(int proc_num, int virt_addr) {
-    int phys_addr = GetPhysicalAddress(proc_num, virt_addr);
+void load_value(int proc_num, int virt_addr) {
+    int phys_addr = get_physical_address(proc_num, virt_addr);
     int value = mem[phys_addr];
     printf("Load proc %d: %d => %d, value=%d\n",
     proc_num, virt_addr, phys_addr, value);
@@ -177,18 +177,18 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[i], "kp") == 0) { // kill process n and free all its pages.
             int proc_num = atoi(argv[++i]);
-            KillProcess(proc_num);
+            kill_process(proc_num);
         }
         else if (strcmp(argv[i], "sb") == 0) { // For process n at virtual address a, store the value b.
             int proc_num = atoi(argv[++i]);
             int virt_addr = atoi(argv[++i]);
             int value = atoi(argv[++i]);
-            StoreValue(proc_num, virt_addr, value);
+            store_value(proc_num, virt_addr, value);
         }
         else if(strcmp(argv[i], "lb") == 0) { // For process n, get the value at virtual address a.
             int proc_num = atoi(argv[++i]);
             int virt_addr = atoi(argv[++i]);
-            LoadValue(proc_num, virt_addr);
+            load_value(proc_num, virt_addr);
         }
     }
 }
