@@ -14,7 +14,8 @@ int get_address(int page, int offset)
 //
 void initialize_mem(void)
 {
-    mem[MEM_SIZE] = 0;
+    memset(mem, 0, MEM_SIZE);
+
     mem[0] = 1;
 }
 //
@@ -22,7 +23,7 @@ void initialize_mem(void)
 //
 unsigned char get_page(void)
 {
-    for (int page_number = 0; page_number <= PAGE_COUNT; page_number ++) {
+    for (int page_number = 0; page_number < PAGE_COUNT; page_number++) {
     	if (mem[page_number] == 0) {
             mem[page_number] = 1;
     		return page_number;
@@ -31,6 +32,13 @@ unsigned char get_page(void)
 
     return 0xff;
 }
+
+void set_page_table_entry(int page_table, int vpage, int page)
+{
+    int pt_addr = get_address(page_table, vpage);
+    mem[pt_addr] = page;
+}
+
 //
 // Allocate pages for a new process
 //
@@ -40,10 +48,12 @@ void new_process(int proc_num, int page_count)
 
     mem[64 + proc_num] = page_table;
 
-    for (int i = 0; i < page_count; i++) {
-        int new_page = get_page();
-        int pt_addr = get_address(page_table, i);
-        mem[pt_addr] = new_page;
+    for (int vpage = 0; vpage < page_count; vpage++) {
+        int page = get_page();
+
+        set_page_table_entry(page_table, vpage, page);
+
+        
 	}
 }
 
